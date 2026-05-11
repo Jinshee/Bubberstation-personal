@@ -185,3 +185,31 @@
 
 /datum/action/cooldown/mob_cooldown/lay_web/web_reflector/plant_web(turf/target_turf, obj/structure/spider/stickyweb/existing_web)
 	new /obj/structure/spider/stickyweb/sealed/reflector(target_turf)
+
+// Spider Aspect quirk start
+/obj/structure/spider/stickyweb/quirky
+	desc = "It's stringy, sticky, and came out of your coworker. Seems particularly feeble."
+
+/obj/structure/spider/stickyweb/quirky/Initialize(mapload)
+	. = ..()
+	add_filter(SPIDER_WEB_TINT, 10, list("type" = "outline", "color" = "#ffaaf8ff", "size" = 0.1))
+
+// Allow ALL arachnids to move through this type. Includes the gene, quirk, and web_surfer
+/obj/structure/spider/stickyweb/quirky/CanAllowThrough(atom/movable/mover, border_dir)
+	. = ..()
+	if(sealed)
+		return FALSE
+	if(mover == allowed_mob)
+		return TRUE
+	if(isliving(mover))
+		if(HAS_TRAIT(mover, TRAIT_WEB_SURFER))
+			return TRUE
+		if(mover.pulledby && HAS_TRAIT(mover.pulledby, TRAIT_WEB_SURFER))
+			return TRUE
+		if(prob(30))
+			stuck_react(mover)
+			return FALSE
+		return .
+	if(isprojectile(mover))
+		return prob(1) // 1% block chance POG!
+	return .
