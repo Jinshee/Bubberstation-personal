@@ -35,9 +35,6 @@
 		if(isxenohybrid(user))
 			user.allowed_turfs += "xenoresin"
 
-		if(isinsect(user) || HAS_TRAIT(user, TRAIT_WEBBING_ASPECT))
-			user.allowed_turfs += "web"
-
 		if(isaquatic(user) || isakula(user) || HAS_TRAIT(user, TRAIT_WATER_ASPECT))
 			user.allowed_turfs += "water"
 
